@@ -69,7 +69,3 @@ export HISTSIZE=10000
 export HISTFILESIZE=20000
 unset HISTCONTROL
 shopt -s histappend
-
-if command -v neofetch; then
-    neofetch
-fi
