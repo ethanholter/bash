@@ -53,7 +53,7 @@ exitstatus() {
     fi
 }
 
-PS1='$(exitstatus) [$(tput setaf 12 bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
+PS1='$(exitstatus) [$(tput setaf 13)\h $(tput sgr0; tput setaf 12 bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -64,3 +64,6 @@ export HISTFILESIZE=20000
 unset HISTCONTROL
 shopt -s histappend
 
+if command -v neofetch; then
+    neofetch
+fi
