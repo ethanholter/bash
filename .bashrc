@@ -16,6 +16,9 @@ alias please='sudo'
 alias :q='exit'
 alias :wq='exit'
 
+# for ssh
+export TERM=xterm-256color
+
 # Enable tab completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
@@ -60,3 +63,4 @@ export HISTSIZE=10000
 export HISTFILESIZE=20000
 unset HISTCONTROL
 shopt -s histappend
+
