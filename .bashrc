@@ -53,7 +53,13 @@ exitstatus() {
     fi
 }
 
-PS1='$(exitstatus) [$(tput setaf 13)\h $(tput sgr0; tput setaf 12 bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
+HOST_COLOR=13
+
+if [[ -n "$SSH_CLIENT" ]]; then
+    HOST_COLOR=10
+fi
+
+PS1='$(exitstatus) [$(tput setaf $HOST_COLOR)\h $(tput sgr0; tput setaf 12 bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
