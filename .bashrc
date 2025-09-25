@@ -52,14 +52,17 @@ exitstatus() {
 	echo "$(tput setaf 1)x$(tput sgr0)"
     fi
 }
+USER_COLOR=12
+if [[ "$USER" == "root" ]]; then 
+    USER_COLOR=9
+fi
 
 HOST_COLOR=13
-
 if [[ -n "$SSH_CLIENT" ]]; then
     HOST_COLOR=10
 fi
 
-PS1='$(exitstatus) [$(tput setaf $HOST_COLOR)\h $(tput sgr0; tput setaf 12 bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
+PS1='$(exitstatus) [$(tput setaf $HOST_COLOR)\h $(tput sgr0; tput setaf $USER_COLOR bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
