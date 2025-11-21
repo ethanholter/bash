@@ -15,9 +15,11 @@ alias va='source ./venv/bin/activate'
 alias please='sudo'
 alias :q='exit'
 alias :wq='exit'
+alias nixconf='sudoedit /etc/nixos/configuration.nix'
+alias nixbuild='sudo nixos-rebuild switch'
+alias nixtest='sudo nixos-rebuild test --fast'
 
-# for ssh
-export TERM=xterm-256color
+export EDITOR=vim
 
 # Enable tab completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
@@ -62,7 +64,10 @@ if [[ -n "$SSH_CLIENT" ]]; then
     HOST_COLOR=10
 fi
 
-PS1='$(exitstatus) [$(tput setaf $HOST_COLOR)\h $(tput sgr0; tput setaf $USER_COLOR bold)\u$(tput sgr0; tput setaf 14) \W$(tput sgr0)]\$ '
+
+# note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
+PS1='$(exitstatus) [\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
+
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
