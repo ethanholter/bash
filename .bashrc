@@ -66,7 +66,7 @@ fi
 
 
 # note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
-PS1='$(exitstatus) [\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
+PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
 
 
 # make dir and cd into it
