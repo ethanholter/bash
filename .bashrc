@@ -72,7 +72,7 @@ if [[ -n "$SSH_CLIENT" ]]; then
 fi
 
 check_config_changes() {
-    if [ -n "$(git -C $1 status -s 2>&1)" ]; then
+    if [[ -d $1 && -n "$(git -C $1 status -s 2>&1)" ]]; then
 	echo "Uncommited changes at $1"
     fi
 }
