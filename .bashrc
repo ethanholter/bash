@@ -18,9 +18,13 @@ alias :wq='exit'
 alias nixconf='sudoedit /etc/nixos/configuration.nix'
 alias nixbuild='sudo nixos-rebuild switch'
 alias nixtest='sudo nixos-rebuild test --fast'
+alias nix='nix --extra-experimental-features nix-command --extra-experimental-features flakes'
+alias 'nixld-search'='nix run github:nix-community/nix-index-database --'
 
 export EDITOR=vim
-
+if [ $TERM == "xterm-kitty" ]; then
+    alias ssh='kitten ssh'
+fi
 # Enable tab completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
@@ -46,6 +50,9 @@ export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
+# so programs like python can find shared libs
+export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+
 # prompt
 exitstatus() {
     if [[ $? == 0 ]]; then
@@ -63,6 +70,17 @@ HOST_COLOR=13
 if [[ -n "$SSH_CLIENT" ]]; then
     HOST_COLOR=10
 fi
+
+check_config_changes() {
+    if [ -n "$(git -C $1 status -s 2>&1)" ]; then
+	echo "Uncommited changes at $1"
+    fi
+}
+
+check_config_changes "$HOME/.config/nvim"
+check_config_changes "$HOME/.config/vim"
+check_config_changes "$HOME/.config/bash"
+check_config_changes "/etc/nixos"
 
 
 # note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
