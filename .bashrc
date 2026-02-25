@@ -82,6 +82,12 @@ check_config_changes "$HOME/.config/vim"
 check_config_changes "$HOME/.config/bash"
 check_config_changes "/etc/nixos"
 
+# create a macro for this
+# ldd ./balena-etcher | grep "not found" | awk '{print $1}' | xargs -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{}
+find_missing_libs() {
+    local binary="${1:-./$}"
+    ldd "$binary" 2>/dev/null | grep "not found" | awk '{print $1}' | xargs -P 4 -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{} | awk '{print $1}' | paste -sd ' ' -
+}
 
 # note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
 PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
