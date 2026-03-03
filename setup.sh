@@ -19,8 +19,13 @@ if [ -f "${HOME}/.bashrc" ]; then
     mv "${HOME}/.bashrc" "${HOME}/.bashrc.old" 
 fi
 
+if [ -f "${HOME}/.bash_profile" ]; then
+    mv "${HOME}/.bash_profile" "${HOME}/.bash_profile.old" 
+fi
+
 # symlink config
 ln -s "${HOME}/.config/bash/.bashrc" "${HOME}/.bashrc"
+ln -s "${HOME}/.config/bash/.bash_profile" "${HOME}/.bash_profile"
 
 echo "success"
 
