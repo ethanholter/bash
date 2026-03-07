@@ -20,11 +20,12 @@ alias nixbuild='sudo nixos-rebuild switch'
 alias nixtest='sudo nixos-rebuild test --fast'
 alias nix='nix --extra-experimental-features nix-command --extra-experimental-features flakes'
 alias 'nixld-search'='nix run github:nix-community/nix-index-database --'
-
+alias clear='clear -x' # dont clear scrollback
 export EDITOR=vim
 if [ $TERM == "xterm-kitty" ]; then
     alias ssh='kitten ssh'
 fi
+
 # Enable tab completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
@@ -50,9 +51,6 @@ export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
-# so programs like python can find shared libs
-export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
-
 # prompt
 exitstatus() {
     if [[ $? == 0 ]]; then
@@ -61,6 +59,7 @@ exitstatus() {
 	echo "$(tput setaf 1)x$(tput sgr0)"
     fi
 }
+
 USER_COLOR=12
 if [[ "$USER" == "root" ]]; then 
     USER_COLOR=9
