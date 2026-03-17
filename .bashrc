@@ -21,7 +21,14 @@ alias nixtest='sudo nixos-rebuild test --fast'
 alias nix='nix --extra-experimental-features nix-command --extra-experimental-features flakes'
 alias 'nixld-search'='nix run github:nix-community/nix-index-database --'
 alias clear='clear -x' # dont clear scrollback
-export EDITOR=vim
+alias fzopn='$EDITOR $(fzf)'
+
+if command -v nvim >/dev/null 2>&1; then
+    export EDITOR=nvim   
+else
+    export EDITOR=vim
+fi
+
 if [ $TERM == "xterm-kitty" ]; then
     alias ssh='kitten ssh'
 fi
@@ -83,6 +90,7 @@ check_config_changes "/etc/nixos"
 
 # create a macro for this
 # ldd ./balena-etcher | grep "not found" | awk '{print $1}' | xargs -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{}
+
 find_missing_libs() {
     local binary="${1:-./$}"
     ldd "$binary" 2>/dev/null | grep "not found" | awk '{print $1}' | xargs -P 4 -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{} | awk '{print $1}' | paste -sd ' ' -
