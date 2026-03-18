@@ -3,11 +3,13 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# ==================================
+#       ALIASES/FUNCTIONS
+# ==================================
+
 # colorful commands
-alias ls='ls --color=auto'
 alias la='ls -A'
 alias ll='ls -lAh'
-alias grep='grep --color=auto'
 alias ...='cd ../..'
 alias ..='cd ..'
 alias ve='python3 -m venv ./venv'
@@ -23,15 +25,27 @@ alias 'nixld-search'='nix run github:nix-community/nix-index-database --'
 alias clear='clear -x' # dont clear scrollback
 alias fzopn='$EDITOR $(fzf)'
 
+# make dir and cd into it
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+# required for proper coloring in kitty terminal
+if [ $TERM == "xterm-kitty" ]; then
+    alias ssh='kitten ssh'
+fi
+
+# ==================================
+#           ENV VARS
+# ==================================
+
 if command -v nvim >/dev/null 2>&1; then
     export EDITOR=nvim   
 else
     export EDITOR=vim
 fi
 
-if [ $TERM == "xterm-kitty" ]; then
-    alias ssh='kitten ssh'
-fi
+# ==================================
+#         TAB COMPLETE
+# ==================================
 
 # Enable tab completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
@@ -41,6 +55,14 @@ if [ -d /etc/bash_completion.d ] && ! shopt -oq posix; then
      for f in /etc/bash_completion.d/*; do . $f; done
 fi
 bind 'set completion-ignore-case on'
+
+
+# ==================================
+#          PRETTY COLORS
+# ==================================
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
 
 # Colorful man pages cuz why not
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2) # green
@@ -58,14 +80,9 @@ export LESS_TERMCAP_ZO=$(tput ssupm)
 export LESS_TERMCAP_ZW=$(tput rsupm)
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
-# prompt
-exitstatus() {
-    if [[ $? == 0 ]]; then
-	echo "$(tput setaf 2)o$(tput sgr0)"
-    else
-	echo "$(tput setaf 1)x$(tput sgr0)"
-    fi
-}
+# ==================================
+#             PROMPT
+# ==================================
 
 USER_COLOR=12
 if [[ "$USER" == "root" ]]; then 
@@ -76,6 +93,12 @@ HOST_COLOR=13
 if [[ -n "$SSH_CLIENT" ]]; then
     HOST_COLOR=10
 fi
+# note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
+PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
+
+# ==================================
+#      CONFIG CHANGED WARNING
+# ==================================
 
 check_config_changes() {
     if [[ -d $1 && -n "$(git -C $1 status -s 2>&1)" ]]; then
@@ -88,23 +111,13 @@ check_config_changes "$HOME/.config/vim"
 check_config_changes "$HOME/.config/bash"
 check_config_changes "/etc/nixos"
 
-# create a macro for this
-# ldd ./balena-etcher | grep "not found" | awk '{print $1}' | xargs -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{}
+# ==================================
+#            BASH HISTORY
+# ==================================
 
-find_missing_libs() {
-    local binary="${1:-./$}"
-    ldd "$binary" 2>/dev/null | grep "not found" | awk '{print $1}' | xargs -P 4 -I {} nix --extra-experimental-features nix-command --extra-experimental-features flakes run github:nix-community/nix-index-database -- lib/{} | awk '{print $1}' | paste -sd ' ' -
-}
-
-# note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
-PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
-
-
-# make dir and cd into it
-mkcd() { mkdir -p "$1" && cd "$1"; }
-
-# Better history
-export HISTSIZE=10000
-export HISTFILESIZE=20000
-unset HISTCONTROL
+HISTSIZE=100000
+HISTFILESIZE=200000
+HISTCONTROL=ignoreboth
+PROMPT_COMMAND="history -a; history -n"
+HISTIGNORE='ls:ll:cd:pwd:bg:fg:history'
 shopt -s histappend
