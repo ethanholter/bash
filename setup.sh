@@ -1,31 +1,43 @@
 #! /usr/bin/env bash
+
 set -euo pipefail
 
-# clone/pull config from github
-if [ ! -d "${HOME}/.config/bash" ]; then
-    git clone https://github.com/ethanholter/bash "${HOME}/.config/bash"
-else
-    (cd ${HOME}/.config/bash && git pull)
-fi
+install_config() {
+    local src="${HOME}/${1}"
+    local dest="${HOME}/${2}"
 
-# symlink already exists
-if [ -L "${HOME}/.bashrc" ]; then 
-    echo "Config already in use. Updated from remote"
-    exit 0
-fi
+    if [ -L "$dest" ]; then
+        echo "${dest} already linked. Skipping..."
+        return 0
+    fi
 
-# regular config already exists. Make a backup
-if [ -f "${HOME}/.bashrc" ]; then
-    mv "${HOME}/.bashrc" "${HOME}/.bashrc.old" 
-fi
+    if [ -e "$dest" ]; then
+        mv "$dest" "${dest}.bak"
+        echo "Backed up existing file: ${dest} -> ${dest}.bak"
+    fi
 
-if [ -f "${HOME}/.bash_profile" ]; then
-    mv "${HOME}/.bash_profile" "${HOME}/.bash_profile.old" 
-fi
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "Linked: ${dest} -> ${src}"
+}
 
-# symlink config
-ln -s "${HOME}/.config/bash/.bashrc" "${HOME}/.bashrc"
-ln -s "${HOME}/.config/bash/.bash_profile" "${HOME}/.bash_profile"
+install_repo() {
+    local url="$1"
+    local dest="${HOME}/${2}"
+
+    if [ ! -d "$dest" ]; then
+        echo "Existing config not found. Cloning {$url} to {$dest}"
+        git clone "$url" "$dest"
+    else
+        echo "Config already cloned. Pulling from remote"
+        (cd "$dest" && git pull)
+    fi
+}
+
+install_repo "https://github.com/ethanholter/bash" ".config/bash"
+install_config ".config/.bashrc" ".bashrc"
+install_config ".config/.bash_profile" ".bash_profile"
+install_config ".config/bash/.profile" ".profile"
 
 echo "success"
 

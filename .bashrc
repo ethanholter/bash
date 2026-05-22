@@ -7,7 +7,6 @@
 #       ALIASES/FUNCTIONS
 # ==================================
 
-# colorful commands
 alias la='ls -A'
 alias ll='ls -lAh'
 alias ...='cd ../..'
@@ -17,30 +16,20 @@ alias va='source ./venv/bin/activate'
 alias please='sudo'
 alias :q='exit'
 alias :wq='exit'
-alias nixconf='sudoedit /etc/nixos/configuration.nix'
-alias nixbuild='sudo nixos-rebuild switch'
-alias nixtest='sudo nixos-rebuild test --fast'
-alias nix='nix --extra-experimental-features nix-command --extra-experimental-features flakes'
-alias 'nixld-search'='nix run github:nix-community/nix-index-database --'
 alias clear='clear -x' # dont clear scrollback
-alias fzopn='$EDITOR $(fzf)'
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
 
-# required for proper coloring in kitty terminal
-if [ $TERM == "xterm-kitty" ]; then
-    alias ssh='kitten ssh'
-fi
-
-# ==================================
-#           ENV VARS
-# ==================================
-
 if command -v nvim >/dev/null 2>&1; then
-    export EDITOR=nvim   
+    export EDITOR=nvim
 else
     export EDITOR=vim
+fi
+
+# required for proper coloring in kitty terminal
+if [ "$TERM" = "xterm-kitty" ]; then
+    alias ssh='kitten ssh'
 fi
 
 # ==================================
@@ -52,10 +41,9 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 if [ -d /etc/bash_completion.d ] && ! shopt -oq posix; then
-     for f in /etc/bash_completion.d/*; do . $f; done
+     for f in /etc/bash_completion.d/*; do . "$f"; done
 fi
 bind 'set completion-ignore-case on'
-
 
 # ==================================
 #          PRETTY COLORS
@@ -74,10 +62,6 @@ export LESS_TERMCAP_us=$(tput smul; tput bold; tput setaf 7) # white
 export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
 export LESS_TERMCAP_mr=$(tput rev)
 export LESS_TERMCAP_mh=$(tput dim)
-export LESS_TERMCAP_ZN=$(tput ssubm)
-export LESS_TERMCAP_ZV=$(tput rsubm)
-export LESS_TERMCAP_ZO=$(tput ssupm)
-export LESS_TERMCAP_ZW=$(tput rsupm)
 export GROFF_NO_SGR=1         # For Konsole and Gnome-terminal
 
 # ==================================
@@ -94,7 +78,7 @@ if [[ -n "$SSH_CLIENT" ]]; then
     HOST_COLOR=10
 fi
 # note to future me: all non-printing characters (escape codes) must be wrapped with \[ and \] to prevent weird behaviors
-PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR bold)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
+PS1='[\[$(tput setaf $HOST_COLOR)\]\h \[$(tput sgr0; tput setaf $USER_COLOR)\]\u\[$(tput sgr0; tput setaf 14)\] \W\[$(tput sgr0)\]]\$ '
 
 # ==================================
 #      CONFIG CHANGED WARNING
@@ -109,6 +93,7 @@ check_config_changes() {
 check_config_changes "$HOME/.config/nvim"
 check_config_changes "$HOME/.config/vim"
 check_config_changes "$HOME/.config/bash"
+check_config_changes "$HOME/.config/tmux"
 check_config_changes "/etc/nixos"
 
 # ==================================
@@ -118,6 +103,6 @@ check_config_changes "/etc/nixos"
 HISTSIZE=100000
 HISTFILESIZE=200000
 HISTCONTROL=ignoreboth
-PROMPT_COMMAND="history -a; history -n"
+PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 HISTIGNORE='ls:ll:cd:pwd:bg:fg:history'
 shopt -s histappend
