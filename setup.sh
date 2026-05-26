@@ -35,8 +35,8 @@ install_repo() {
 }
 
 install_repo "https://github.com/ethanholter/bash" ".config/bash"
-install_config ".config/.bashrc" ".bashrc"
-install_config ".config/.bash_profile" ".bash_profile"
+install_config ".config/bash/.bashrc" ".bashrc"
+install_config ".config/bash/.bash_profile" ".bash_profile"
 install_config ".config/bash/.profile" ".profile"
 
 echo "success"
