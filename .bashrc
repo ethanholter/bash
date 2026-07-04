@@ -94,3 +94,6 @@ HISTCONTROL=ignoreboth
 PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 HISTIGNORE='ls:ll:cd:pwd:bg:fg:history'
 shopt -s histappend
+
+locale -a | grep en_US.utf8 > /dev/null || (echo "Missing en_US locales. Generating now..." && locale-gen en_US.UTF-8)
+
