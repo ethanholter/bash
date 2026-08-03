@@ -17,6 +17,18 @@ alias please='sudo'
 alias :q='exit'
 alias :wq='exit'
 alias clear='clear -x' # dont clear scrollback
+alias ubuntu='distrobox-enter --root ubuntu'
+
+# git aliases
+alias g="git status"
+alias ga="git add"
+alias gaa="git add ."
+alias gc="git commit -m"
+alias gl="git log --oneline --decorate --graph"
+alias gla="git log --graph --oneline --all --decorate"
+alias gps="git push"
+alias gpl="git pull"
+alias gd="git diff"
 
 # make dir and cd into it
 mkcd() { mkdir -p "$1" && cd "$1"; }
@@ -95,5 +107,9 @@ PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
 HISTIGNORE='ls:ll:cd:pwd:bg:fg:history'
 shopt -s histappend
 
-locale -a | grep en_US.utf8 > /dev/null || (echo "Missing en_US locales. Generating now..." && locale-gen en_US.UTF-8)
+# ==================================
+#               MISC
+# ==================================
 
+locale -a | grep en_US.utf8 > /dev/null || (echo "Missing en_US locales. Generating now..." && locale-gen en_US.UTF-8)
+which zoxide &> /dev/null && eval "$(zoxide init bash)"
